@@ -1,25 +1,4 @@
-# The MIT License (MIT)
-# Copyright (c) 2016 satojkovic
-
-# Permission is hereby granted, free of charge, to any person obtaining
-# a copy of this software and associated documentation files (the
-# "Software"), to deal in the Software without restriction, including
-# without limitation the rights to use, copy, modify, merge, publish,
-# distribute, sublicense, and/or sell copies of the Software, and to
-# permit persons to whom the Software is furnished to do so, subject to
-# the following conditions:
-
-# The above copyright notice and this permission notice shall be
-# included in all copies or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+#Amar Jasarbasic - Kaptur Technologies
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -34,10 +13,10 @@ CNN_IN_WIDTH = 64
 CNN_IN_HEIGHT = 32
 CNN_IN_CH = 3
 PIXEL_DEPTH = 255.0
-TRAIN_DIR = 'flickr_logos_27_dataset'
+TRAIN_DIR = 'datasets/training_sets/flickr_logos_27_dataset'
 CROPPED_AUG_IMAGE_DIR = os.path.join(
-    TRAIN_DIR, 'flickr_logos_27_dataset_cropped_augmented_images')
-PICKLE_FILENAME = 'deep_logo.pickle'
+    TRAIN_DIR, 'datasets/training_sets/flickr_logos_27_dataset_cropped_augmented_images')
+PICKLE_FILENAME = 'Kaptur_model.pickle'
 
 TRAIN_SIZE = 50000  # prune the training data as needed. There are 163169 training files.
 VALID_SIZE = 5000
