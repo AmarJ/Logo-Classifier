@@ -1,6 +1,6 @@
 # Kaptur-ConvolutionalNN
 
-![Alt text](logoNew1.png?raw=true "Kaptur_Logo")
+![Alt text](Kaptur-Logo.png?raw=true "Kaptur_Logo")
 
 Kaptur is a logo recognition tool that can identify what logos are present in an image. A live demo of this will be available soon at https://kapturtech.com/.
 
