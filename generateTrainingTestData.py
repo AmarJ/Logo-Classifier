@@ -15,7 +15,7 @@ CNN_IN_CH = 3
 PIXEL_DEPTH = 255.0
 TRAIN_DIR = 'datasets/training_sets/flickr_logos_27_dataset'
 CROPPED_AUG_IMAGE_DIR = os.path.join(
-    TRAIN_DIR, 'datasets/training_sets/flickr_logos_27_dataset_cropped_augmented_images')
+    TRAIN_DIR, 'flickr_logos_27_dataset_cropped_augmented_images')
 PICKLE_FILENAME = 'Kaptur_model.pickle'
 
 TRAIN_SIZE = 50000  # prune the training data as needed. There are 163169 training files.
