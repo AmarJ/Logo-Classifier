@@ -9,3 +9,5 @@ I used a similar approach to designing my convolutional neural network that Matt
 I used a flickr data set to train the CNN on 27 different types of logos. 
 
 For now the only logos that Kaptur can identify are the following: Adidas, Apple, BMW, Citroen, Coca Cola, DHL, Fedex, Ferrari, Ford, Google, Heineken, HP, McDonalds, Mini, Nbc, Nike, Pepsi, Porsche, Puma, Red Bull, Sprite, Starbucks, Intel, Texaco, Unisef, Vodafone and Yahoo.
+
+The approach where I merge Kaptur and Kaptur GraphCut into one really neat tool is in a private repo. Please email me at amarjasarbasic@gmail.com if you would like me to send you the contents of that repo.
