@@ -1,6 +1,6 @@
 # Kaptur-ConvolutionalNN
 
-Kaptur is a logo recognition tool that can identify what logos are present in an image. A live demo of this will be available soon at (https://kapturtech.com/)[https://kapturtech.com/] 
+Kaptur is a logo recognition tool that can identify what logos are present in an image. A live demo of this will be available soon at https://kapturtech.com/.
 
 I used a similar approach to designing my convolutional neural net that Matthew Earl did for his license plate recognition tool. His approach is detailed [here](https://matthewearl.github.io/2016/05/06/cnn-anpr/). 
 
