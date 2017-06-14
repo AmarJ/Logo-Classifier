@@ -9,24 +9,22 @@ from six.moves import cPickle as pickle
 import re
 import common
 
-CNN_IN_WIDTH = 64
-CNN_IN_HEIGHT = 32
-CNN_IN_CH = 3
-PIXEL_DEPTH = 255.0
-TRAIN_DIR = 'datasets/training_sets/flickr_logos_27_dataset'
-CROPPED_AUG_IMAGE_DIR = os.path.join(
-    TRAIN_DIR, 'datasets/training_sets/flickr_logos_27_dataset_cropped_augmented_images')
-PICKLE_FILENAME = 'Kaptur_model.pickle'
+imageWidth = 64
+imageHeight = 32
+imageCH = 3
+imagePixelDepth = 255.0
+dataSetDir = 'datasets/training_sets/flickr_logos_27_dataset'
+trainingSet = os.path.join(dataSetDir, 'flickr_logos_27_dataset_cropped_augmented_images')
+pickleFileName = 'Kaptur_model.pickle'
 
-TRAIN_SIZE = 50000  # prune the training data as needed. There are 163169 training files.
+TRAIN_SIZE = 50000  
 VALID_SIZE = 5000
-TEST_SIZE = 5000  # There are 54425 test files.
-
+TEST_SIZE = 5000  
 
 def load_logo(data_dir):
     image_files = os.listdir(data_dir)
     dataset = np.ndarray(
-        shape=(len(image_files), CNN_IN_HEIGHT, CNN_IN_WIDTH, CNN_IN_CH),
+        shape=(len(image_files), imageHeight, imageWidth, imageCH),
         dtype=np.float32)
     print(data_dir)
     num_images = 0
@@ -34,8 +32,8 @@ def load_logo(data_dir):
         image_file = os.path.join(data_dir, image)
         try:
             image_data = (ndimage.imread(image_file).astype(float) -
-                          PIXEL_DEPTH / 2) / PIXEL_DEPTH
-            if image_data.shape != (CNN_IN_HEIGHT, CNN_IN_WIDTH, CNN_IN_CH):
+                          imagePixelDepth / 2) / imagePixelDepth
+            if image_data.shape != (imageHeight, imageWidth, imageCH):
                 raise Exception('Unexpected image shape: %s' %
                                 str(image_data.shape))
             dataset[num_images, :, :] = image_data
@@ -82,10 +80,10 @@ def make_arrays(nb_rows, image_width, image_height, image_ch=1):
 
 def merge_datasets(pickle_files, train_size, valid_size=0):
     num_classes = len(pickle_files)
-    valid_dataset, valid_labels = make_arrays(valid_size, CNN_IN_WIDTH,
-                                              CNN_IN_HEIGHT, CNN_IN_CH)
-    train_dataset, train_labels = make_arrays(train_size, CNN_IN_WIDTH,
-                                              CNN_IN_HEIGHT, CNN_IN_CH)
+    valid_dataset, valid_labels = make_arrays(valid_size, imageWidth,
+                                              imageHeight, imageCH)
+    train_dataset, train_labels = make_arrays(train_size, imageWidth,
+                                              imageHeight, imageCH)
     vsize_per_class = valid_size // num_classes
     tsize_per_class = train_size // num_classes
 
@@ -117,7 +115,7 @@ def merge_datasets(pickle_files, train_size, valid_size=0):
 def save_pickle(train_dataset, train_labels, valid_dataset, valid_labels,
                 test_dataset, test_labels):
     try:
-        f = open(PICKLE_FILENAME, 'wb')
+        f = open(pickleFileName, 'wb')
         save = {
             'train_dataset': train_dataset,
             'train_labels': train_labels,
@@ -129,7 +127,7 @@ def save_pickle(train_dataset, train_labels, valid_dataset, valid_labels,
         pickle.dump(save, f, pickle.HIGHEST_PROTOCOL)
         f.close()
     except Exception as e:
-        print('Unable to save data to', PICKLE_FILENAME, ':', e)
+        print('Unable to save data to', pickleFileName, ':', e)
         raise
 
 
@@ -141,16 +139,16 @@ def randomize(dataset, labels):
 
 
 def main():
-    train_dirs = [
-        os.path.join(CROPPED_AUG_IMAGE_DIR, class_name, 'train')
+    dataSetDirs = [
+        os.path.join(trainingSet, class_name, 'train')
         for class_name in common.CLASS_NAME
     ]
     test_dirs = [
-        os.path.join(CROPPED_AUG_IMAGE_DIR, class_name, 'test')
+        os.path.join(trainingSet, class_name, 'test')
         for class_name in common.CLASS_NAME
     ]
 
-    train_datasets = maybe_pickle(train_dirs)
+    train_datasets = maybe_pickle(dataSetDirs)
     test_datasets = maybe_pickle(test_dirs)
 
     valid_dataset, valid_labels, train_dataset, train_labels = merge_datasets(
@@ -163,7 +161,7 @@ def main():
 
     save_pickle(train_dataset, train_labels, valid_dataset, valid_labels,
                 test_dataset, test_labels)
-    statinfo = os.stat(PICKLE_FILENAME)
+    statinfo = os.stat(pickleFileName)
     print('Compressed pickle size:', statinfo.st_size)
 
 
