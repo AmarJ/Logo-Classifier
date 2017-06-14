@@ -4,9 +4,9 @@ Kaptur is a logo recognition tool that can identify what logos are present in an
 
 ##
 
-I used a similar approach to designing my convolutional neural network that Matthew Earl did for his license plate recognition project. His approach is detailed [here](https://matthewearl.github.io/2016/05/06/cnn-anpr/). 
+Kaptur uses machine learning for the task of detecting logos. I use a similar approach to what Matthew Earl uses for his license plate recognition project when designing my convolutional neural network. His approach can be found [here](https://matthewearl.github.io/2016/05/06/cnn-anpr/). 
 
-I used a flickr data set to train the CNN on 27 different types of logos. 
+I used a Flickr data set to train the CNN on 27 different types of logos. 
 
 For now the only logos that Kaptur can identify are the following: Adidas, Apple, BMW, Citroen, Coca Cola, DHL, Fedex, Ferrari, Ford, Google, Heineken, HP, McDonalds, Mini, Nbc, Nike, Pepsi, Porsche, Puma, Red Bull, Sprite, Starbucks, Intel, Texaco, Unisef, Vodafone and Yahoo.
 
