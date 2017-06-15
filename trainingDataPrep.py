@@ -9,7 +9,7 @@ import shutil
 import re
 import glob
 
-CNN_IN_WIDTH = 64
+imageWidth = 64
 CNN_IN_HEIGHT = 32
 
 DATA_AUG_POS_SHIFT_MIN = -2
@@ -61,7 +61,7 @@ def aug_pos(annot, im):
         cy = rect['cy'] + sy
         cropped_im = im.crop((cx - rect['wid'] // 2, cy - rect['hgt'] // 2,
                               cx + rect['wid'] // 2, cy + rect['hgt'] // 2))
-        resized_im = cropped_im.resize((CNN_IN_WIDTH, CNN_IN_HEIGHT))
+        resized_im = cropped_im.resize((imageWidth, CNN_IN_HEIGHT))
         aug_pos_ims.append(resized_im)
         aug_pos_suffixes.append('p' + str(sx) + str(sy))
         cropped_im.close()
@@ -79,7 +79,7 @@ def aug_scale(annot, im):
         h = int(rect['hgt'] * s)
         cropped_im = im.crop((rect['cx'] - w // 2, rect['cy'] - h // 2,
                               rect['cx'] + w // 2, rect['cy'] + h // 2))
-        resized_im = cropped_im.resize((CNN_IN_WIDTH, CNN_IN_HEIGHT))
+        resized_im = cropped_im.resize((imageWidth, CNN_IN_HEIGHT))
         aug_scale_ims.append(resized_im)
         aug_scale_suffixes.append('s' + str(s))
         cropped_im.close()
@@ -97,7 +97,7 @@ def aug_rot(annot, im):
         cropped_im = rotated_im.crop(
             (rect['cx'] - rect['wid'] // 2, rect['cy'] - rect['hgt'] // 2,
              rect['cx'] + rect['wid'] // 2, rect['cy'] + rect['hgt'] // 2))
-        resized_im = cropped_im.resize((CNN_IN_WIDTH, CNN_IN_HEIGHT))
+        resized_im = cropped_im.resize((imageWidth, CNN_IN_HEIGHT))
         aug_rot_ims.append(resized_im)
         aug_rot_suffixes.append('r' + str(r))
         rotated_im.close()
@@ -109,7 +109,7 @@ def aug_rot(annot, im):
 def crop_logos(annot, im):
     x1, y1, x2, y2 = rect_coord(annot[3:])
     cropped_im = im.crop((x1, y1, x2, y2))
-    cropped_im = cropped_im.resize((CNN_IN_WIDTH, CNN_IN_HEIGHT))
+    cropped_im = cropped_im.resize((imageWidth, CNN_IN_HEIGHT))
     cropped_suffix = 'p00'
     return [cropped_im], [cropped_suffix]
 
@@ -216,8 +216,8 @@ def crop_none():
             w, h = im.size
             cw, ch = w // 2, h // 2
             cropped_im = im.crop(
-                (cw - CNN_IN_WIDTH // 2, ch - CNN_IN_HEIGHT // 2,
-                 cw + CNN_IN_WIDTH // 2, ch + CNN_IN_HEIGHT // 2))
+                (cw - imageWidth // 2, ch - CNN_IN_HEIGHT // 2,
+                 cw + imageWidth // 2, ch + CNN_IN_HEIGHT // 2))
             dst_fn = os.path.basename(none_img)
             cropped_im.save(os.path.join(dst_dir, dst_fn))
 
