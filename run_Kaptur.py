@@ -1,4 +1,4 @@
-#Amar Jasarbasic - Kaptur Technologies
+#Amar Jasarbasic - Kaptur Technology
 import tensorflow as tf
 import numpy as np
 import os
@@ -17,14 +17,12 @@ imageCH = 3
 dataSetDir = '../Kaptur-Data/datasets/training_sets/flickr_logos_27_dataset/flickr_logos_27_dataset_cropped_augmented_images'
 pixDepth = 225.0
 
-FLAGS = tf.flags.FLAGS
-tf.app.flags.DEFINE_integer("image_width", 64, "A width of an input image")
-tf.app.flags.DEFINE_integer("image_height", 32, "A height of an input image")
-tf.app.flags.DEFINE_integer("num_channels", 3,
-                            "A number of channels of an input image")
-tf.app.flags.DEFINE_integer("num_classes", 27, "Number of logo classes.")
-tf.app.flags.DEFINE_integer("patch_size", 5,
-                            "A patch size of convolution filter")
+tfParams = tf.flags.FLAGS
+tf.app.flags.DEFINE_integer("image_width", 64, "width")
+tf.app.flags.DEFINE_integer("image_height", 32, "height")
+tf.app.flags.DEFINE_integer("num_channels", 3, "# of channels")
+tf.app.flags.DEFINE_integer("num_classes", 27, "# of logo classes")
+tf.app.flags.DEFINE_integer("patch_size", 5,"patch size")
 
 def model(data, w_conv1, b_conv1, w_conv2, b_conv2, w_conv3, b_conv3, w_fc1,
           b_fc1, w_fc2, b_fc2):
@@ -56,12 +54,10 @@ def model(data, w_conv1, b_conv1, w_conv2, b_conv2, w_conv3, b_conv3, w_fc1,
     return out
 
 
-def load_initial_weights(fileName):
+def loadInitialWeights(fileName):
     f = np.load(fileName)
-
-    initial_weights = [f[n] for n in sorted(f.files, key=lambda s: int(s[4:]))]
-
-    return initial_weights
+    initialWeights = [f[n] for n in sorted(f.files, key=lambda s: int(s[4:]))]
+    return initialWeights
 
 def main():
     if len(sys.argv) > 1:
@@ -82,7 +78,6 @@ def main():
     img = img.resize((imageWidth, imageHeight), PIL.Image.ANTIALIAS)
     img.save(test_image_fileName)
 
-    # Open and resize a test image
     test_image_org = (ndimage.imread(test_image_fileName).astype(np.float32) - pixDepth / 2) / pixDepth
     test_image_org.resize(imageHeight, imageWidth, imageCH)
     test_image = test_image_org.reshape((1, imageWidth, imageHeight, imageCH))
@@ -92,33 +87,33 @@ def main():
     # Training model
     graph = tf.Graph()
     with graph.as_default():
-        w_conv1 = tf.Variable(tf.truncated_normal([FLAGS.patch_size, FLAGS.patch_size, FLAGS.num_channels, 48],stddev=0.1))
+        w_conv1 = tf.Variable(tf.truncated_normal([tfParams.patch_size, tfParams.patch_size, tfParams.num_channels, 48],stddev=0.1))
         b_conv1 = tf.Variable(tf.constant(0.1, shape=[48]))
 
-        w_conv2 = tf.Variable(tf.truncated_normal([FLAGS.patch_size, FLAGS.patch_size, 48, 64], stddev=0.1))
+        w_conv2 = tf.Variable(tf.truncated_normal([tfParams.patch_size, tfParams.patch_size, 48, 64], stddev=0.1))
         b_conv2 = tf.Variable(tf.constant(0.1, shape=[64]))
 
-        w_conv3 = tf.Variable(tf.truncated_normal([FLAGS.patch_size, FLAGS.patch_size, 64, 128], stddev=0.1))
+        w_conv3 = tf.Variable(tf.truncated_normal([tfParams.patch_size, tfParams.patch_size, 64, 128], stddev=0.1))
         b_conv3 = tf.Variable(tf.constant(0.1, shape=[128]))
 
         w_fc1 = tf.Variable(tf.truncated_normal([16 * 4 * 128, 2048], stddev=0.1))
         b_fc1 = tf.Variable(tf.constant(0.1, shape=[2048]))
 
-        w_fc2 = tf.Variable(tf.truncated_normal([2048, FLAGS.num_classes]))
-        b_fc2 = tf.Variable(tf.constant(0.1, shape=[FLAGS.num_classes]))
+        w_fc2 = tf.Variable(tf.truncated_normal([2048, tfParams.num_classes]))
+        b_fc2 = tf.Variable(tf.constant(0.1, shape=[tfParams.num_classes]))
 
         params = [w_conv1, b_conv1, w_conv2, b_conv2, w_conv3, b_conv3, w_fc1, b_fc1, w_fc2, b_fc2]
 
         # restore weights
-        f = "weights.npz"
-        if os.path.exists(f):
-            initial_weights = load_initial_weights(f)
+        weightFile = "weights.npz"
+        if os.path.exists(weightFile):
+            initialWeights = loadInitialWeights(weightFile)
         else:
-            initial_weights = None
+            initialWeights = None
 
-        if initial_weights is not None:
-            assert len(initial_weights) == len(params)
-            assign_ops = [w.assign(v) for w, v in zip(params, initial_weights)]
+        if initialWeights is not None:
+            assert len(initialWeights) == len(params)
+            assign_ops = [w.assign(v) for w, v in zip(params, initialWeights)]
 
         tf_test_image = tf.constant(test_image)
         logits = model(tf_test_image, w_conv1, b_conv1, w_conv2, b_conv2, w_conv3, b_conv3, w_fc1, b_fc1, w_fc2, b_fc2)
@@ -128,13 +123,14 @@ def main():
 
     with tf.Session(graph=graph) as session:
         tf.global_variables_initializer().run()
-        if initial_weights is not None:
+        if initialWeights is not None:
             session.run(assign_ops)
             print('initialized by pre-learned weights')
+
         elif os.path.exists("../Kaptur-Data/models"):
             save_path = "../Kaptur-Data/models/deep_logo_model"
             saver.restore(session, save_path)
-            print('Model restored')
+
         else:
             print('initialized')
         pred = session.run([test_pred])
