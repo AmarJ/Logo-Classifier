@@ -1,6 +1,4 @@
-#Amar Jasarbasic - Kaptur Technologies
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#Amar Jasarbasic - Kaptur Technology
 from __future__ import print_function
 import tensorflow as tf
 import numpy as np
@@ -9,35 +7,28 @@ from six.moves import range
 import sys
 import os
 
-FLAGS = tf.app.flags.FLAGS
+tfParams = tf.app.flags.FLAGS
 
-tf.app.flags.DEFINE_string(
-    "train_dir", "flickr_logos_27_dataset",
-    "Directory where to write event logs and checkpoint.")
-tf.app.flags.DEFINE_integer("max_steps", 10001, "Number of batches to run.")
-tf.app.flags.DEFINE_integer("image_width", 64, "A width of an input image.")
-tf.app.flags.DEFINE_integer("image_height", 32, "A height of an input image.")
-tf.app.flags.DEFINE_integer("num_classes", 27, "Number of logo classes.")
-tf.app.flags.DEFINE_integer("learning_rate", 0.0001, "Learning rate")
-tf.app.flags.DEFINE_integer("batch_size", 64, "A batch size")
-tf.app.flags.DEFINE_integer("num_channels", 3,
-                            "A number of channels of an input image.")
-tf.app.flags.DEFINE_integer("patch_size", 5,
-                            "A patch size of convolution filter")
+tf.app.flags.DEFINE_string("train_dir", "../Kaptur-Data/datasets/training_sets/flickr_logos_27_dataset", "dir to write logs")
+tf.app.flags.DEFINE_integer("max_steps", 10001, "# batches")
+tf.app.flags.DEFINE_integer("image_width", 64, "width")
+tf.app.flags.DEFINE_integer("image_height", 32, "height")
+tf.app.flags.DEFINE_integer("num_classes", 27, "# of logo classes")
+tf.app.flags.DEFINE_integer("learning_rate", 0.0001, "learning rate")
+tf.app.flags.DEFINE_integer("batch_size", 64, "batch size")
+tf.app.flags.DEFINE_integer("num_channels", 3, "# of channels")
+tf.app.flags.DEFINE_integer("patch_size", 5, "patch size")
 
-PICKLE_FILENAME = 'deep_logo.pickle'
+pickleFileName = '../Kaptur-Data/datasets/kaptur.pickle'
 
 
 def accuracy(predictions, labels):
-    return (100 * np.sum(np.argmax(predictions, 1) == np.argmax(labels, 1)) /
-            predictions.shape[0])
+    return (100 * np.sum(np.argmax(predictions, 1) == np.argmax(labels, 1)) /predictions.shape[0])
 
 
 def reformat(dataset, labels):
-    dataset = dataset.reshape((-1, FLAGS.image_width, FLAGS.image_height,
-                               FLAGS.num_channels)).astype(np.float32)
-    labels = (
-        np.arange(FLAGS.num_classes) == labels[:, None]).astype(np.float32)
+    dataset = dataset.reshape((-1, tfParams.image_width, tfParams.image_height, FLAGS.num_channels)).astype(np.float32)
+    labels = (np.arange(tfParams.num_classes) == labels[:, None]).astype(np.float32)
     return dataset, labels
 
 
@@ -95,11 +86,9 @@ def main():
 
         # f.files has unordered keys ['arr_8', 'arr_9', 'arr_6'...]
         # Sorting keys by value of numbers
-        initial_weights = [
-            f[n] for n in sorted(f.files, key=lambda s: int(s[4:]))
-        ]
+        initialWeights = [f[n] for n in sorted(f.files, key=lambda s: int(s[4:]))]
     else:
-        initial_weights = None
+        initialWeights = None
 
     # read input data
     dataset, labels = read_data()
@@ -117,26 +106,26 @@ def main():
         # Variables
         w_conv1 = tf.Variable(
             tf.truncated_normal(
-                [FLAGS.patch_size, FLAGS.patch_size, FLAGS.num_channels, 48],
+                [tfParams.patch_size, tfParams.patch_size, tfParams.num_channels, 48],
                 stddev=0.1))
         b_conv1 = tf.Variable(tf.constant(0.1, shape=[48]))
 
         w_conv2 = tf.Variable(
             tf.truncated_normal(
-                [FLAGS.patch_size, FLAGS.patch_size, 48, 64], stddev=0.1))
+                [tfParams.patch_size, tfParams.patch_size, 48, 64], stddev=0.1))
         b_conv2 = tf.Variable(tf.constant(0.1, shape=[64]))
 
         w_conv3 = tf.Variable(
             tf.truncated_normal(
-                [FLAGS.patch_size, FLAGS.patch_size, 64, 128], stddev=0.1))
+                [tfParams.patch_size, tfParams.patch_size, 64, 128], stddev=0.1))
         b_conv3 = tf.Variable(tf.constant(0.1, shape=[128]))
 
         w_fc1 = tf.Variable(
             tf.truncated_normal([16 * 4 * 128, 2048], stddev=0.1))
         b_fc1 = tf.Variable(tf.constant(0.1, shape=[2048]))
 
-        w_fc2 = tf.Variable(tf.truncated_normal([2048, FLAGS.num_classes]))
-        b_fc2 = tf.Variable(tf.constant(0.1, shape=[FLAGS.num_classes]))
+        w_fc2 = tf.Variable(tf.truncated_normal([2048, tfParams.num_classes]))
+        b_fc2 = tf.Variable(tf.constant(0.1, shape=[tfParams.num_classes]))
 
         # Params
         params = [
@@ -145,17 +134,17 @@ def main():
         ]
 
         # Initial weights
-        if initial_weights is not None:
-            assert len(params) == len(initial_weights)
-            assign_ops = [w.assign(v) for w, v in zip(params, initial_weights)]
+        if initialWeights is not None:
+            assert len(params) == len(initialWeights)
+            assign_ops = [w.assign(v) for w, v in zip(params, initialWeights)]
 
         # Input data
         tf_train_dataset = tf.placeholder(
             tf.float32,
-            shape=(FLAGS.batch_size, FLAGS.image_width, FLAGS.image_height,
-                   FLAGS.num_channels))
+            shape=(tfParams.batch_size, tfParams.image_width, tfParams.image_height,
+                   tfParams.num_channels))
         tf_train_labels = tf.placeholder(
-            tf.float32, shape=(FLAGS.batch_size, FLAGS.num_classes))
+            tf.float32, shape=(tfParams.batch_size, tfParams.num_classes))
         tf_valid_dataset = tf.constant(valid_dataset)
         tf_test_dataset = tf.constant(test_dataset)
 
@@ -193,11 +182,11 @@ def main():
         else:
             print('initialized')
         for step in range(FLAGS.max_steps):
-            offset = (step * FLAGS.batch_size) % (
-                train_labels.shape[0] - FLAGS.batch_size)
-            batch_data = train_dataset[offset:(offset + FLAGS.batch_size
+            offset = (step * tfParams.batch_size) % (
+                train_labels.shape[0] - tfParams.batch_size)
+            batch_data = train_dataset[offset:(offset + tfParams.batch_size
                                                ), :, :, :]
-            batch_labels = train_labels[offset:(offset + FLAGS.batch_size), :]
+            batch_labels = train_labels[offset:(offset + tfParams.batch_size), :]
             feed_dict = {
                 tf_train_dataset: batch_data,
                 tf_train_labels: batch_labels

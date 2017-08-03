@@ -20,8 +20,8 @@ pixDepth = 225.0
 tfParams = tf.flags.FLAGS
 tf.app.flags.DEFINE_integer("image_width", 64, "width")
 tf.app.flags.DEFINE_integer("image_height", 32, "height")
-tf.app.flags.DEFINE_integer("num_channels", 3, "# of channels")
 tf.app.flags.DEFINE_integer("num_classes", 27, "# of logo classes")
+tf.app.flags.DEFINE_integer("num_channels", 3, "# of channels")
 tf.app.flags.DEFINE_integer("patch_size", 5,"patch size")
 
 def model(data, w_conv1, b_conv1, w_conv2, b_conv2, w_conv3, b_conv3, w_fc1,
